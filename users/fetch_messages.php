@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../includes/auth_check.php';
 if (!isset($_SESSION["user_id"])) {
     http_response_code(403);
     exit;

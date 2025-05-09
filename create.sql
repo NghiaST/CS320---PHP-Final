@@ -10,6 +10,8 @@ CREATE TABLE users (
     session_token VARCHAR(255) DEFAULT NULL
 );
 
+ALTER TABLE users ADD COLUMN session_token VARCHAR(255) DEFAULT NULL;
+
 CREATE TABLE friend_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sender_id INT NOT NULL,

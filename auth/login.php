@@ -16,8 +16,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
+        // Generate a unique session token
+        $session_token = bin2hex(random_bytes(32));
+
+        // Update the session token in the database
+        $stmt = $pdo->prepare("UPDATE users SET session_token = ? WHERE id = ?");
+        $stmt->execute([$session_token, $user['id']]);
+
+        // Store session details
         $_SESSION["user_id"] = $user['id'];
         $_SESSION["username"] = $user['username'];
+        $_SESSION["session_token"] = $session_token;
+
         header("Location: ../dashboard/index.php");
         exit;
     } else {
@@ -115,9 +125,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <h2>Login</h2>
 
     <?php
-    if (isset($_GET['error'])) {
-        echo '<div class="error">' . htmlspecialchars($_GET['error']) . '</div>';
+    if (isset($_SESSION["logged_out_notice"])) {
+        echo '<div class="error">' . htmlspecialchars($_SESSION["logged_out_notice"]) . '</div>';
+        unset($_SESSION["logged_out_notice"]); // Clear the notice after displaying it
     }
+
     if (isset($error)) {
         echo '<div class="error">' . htmlspecialchars($error) . '</div>';
     }

@@ -16,8 +16,8 @@ $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
 if (!$user || $user['session_token'] !== $session_token) {
-    // Notify the user about the logout
-    echo "<script>alert('You have been logged out because your account was accessed from another device.');</script>";
+    // Set a logout notice for the user
+    $_SESSION["logged_out_notice"] = "You have been logged out because your account was accessed from another device.";
 
     // Destroy the session and redirect to login
     session_unset();

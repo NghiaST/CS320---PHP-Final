@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once '../includes/auth_check.php';
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit;
@@ -95,5 +95,22 @@ $friends = $stmt->fetchAll();
         <a href="../auth/logout.php">Logout</a>
     </div>
 </div>
+
+<script>
+function checkSession() {
+    fetch('../users/poll_session.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "logged_out") {
+                if (confirm("You have been logged out because your account was accessed from another device. Click OK to proceed to the login page.")) {
+                    window.location.href = "../auth/login.php";
+                }
+            }
+        });
+}
+
+// Poll every 5 seconds
+setInterval(checkSession, 5000);
+</script>
 </body>
 </html>
